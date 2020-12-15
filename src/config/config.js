@@ -26,3 +26,8 @@ exports.dbPort = process.env.APP_CM_DB_PORT || 27017; // Puerto de la Base de Da
 exports.dbName = process.env.APP_CM_DB_NAME || ""; // Nombre de la Base de Datos
 exports.dbUser = process.env.APP_CM_DB_USER || ""; // Usuario de la Base de Datos
 exports.dbPwd = process.env.APP_CM_DB_PWD || ""; // Contraseña de la Base de Datos
+
+/*******************************************************************************************************/
+// Variables Generales de la Aplicación //
+/*******************************************************************************************************/
+exports.tokenTime = "5d"; // Tiempo de expiración de los jsonwebtokens generados en login

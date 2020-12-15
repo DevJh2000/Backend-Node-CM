@@ -2,6 +2,7 @@
 // Requerimos las dependencias //
 /*******************************************************************************************************/
 const { Router } = require("express");
+const { validarToken, validarRol } = require("../middlewares/autenticacion");
 const trabajador = require("../controllers/rrhh/trabajador.controller");
 
 /*******************************************************************************************************/
@@ -12,11 +13,11 @@ const router = Router();
 /*******************************************************************************************************/
 // Definimos las rutas //
 /*******************************************************************************************************/
-router.get("/trabajadores", trabajador.getAll);
-router.post("/trabajador", trabajador.create);
-router.get("/trabajador/:id", trabajador.get);
-router.put("/trabajador/:id", trabajador.update);
-router.delete("/trabajador/:id", trabajador.delete);
+router.get("/trabajadores", [validarToken, validarRol], trabajador.getAll);
+router.post("/trabajador", [validarToken, validarRol], trabajador.create);
+router.get("/trabajador/:id", [validarToken, validarRol], trabajador.get);
+router.put("/trabajador/:id", [validarToken, validarRol], trabajador.update);
+router.delete("/trabajador/:id", [validarToken, validarRol], trabajador.delete);
 
 /*******************************************************************************************************/
 // Exportamos las rutas definidas en router //

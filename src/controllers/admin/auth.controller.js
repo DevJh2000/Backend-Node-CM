@@ -6,6 +6,7 @@ const Usuario = require("../../models/admin/usuario");
 const Sesion = require("../../models/admin/sesion");
 const Trabajador = require("../../models/rrhh/trabajador");
 const { generarTokenConTiempo } = require("../../helpers/jwtoken");
+const { tokenTime } = require("../../config/config");
 
 /*******************************************************************************************************/
 // Definimos los métodos //
@@ -75,7 +76,7 @@ exports.login = (req, res) => {
                 $set: {
                   dispositivo: body.dispositivo,
                   navegador: body.navegador,
-                  estado: "online"
+                  estado: "online",
                 },
               },
               { new: true }
@@ -102,25 +103,24 @@ exports.login = (req, res) => {
 
         // Definimos el objeto payload
         const payload = {
-          id_usua: usuario._id,
-          id_trab: trabajador._id,
-          rol: usuario.rol,
-          nombres: trabajador.nombres,
-          apellidos: trabajador.apellidos,
-          email: trabajador.email,
-          img: trabajador.img,
+          usuario: {
+            _id: usuario._id,
+            trabajador: trabajador._id,
+            rol: usuario.rol,
+            nombres: trabajador.nombres,
+            apellidos: trabajador.apellidos,
+            email: trabajador.email,
+            img: trabajador.img,
+          },
         };
 
-        // Definimos el tiempo de expiración
-        const tiempo = "5d"; // expiración de 05 dias
-
         // Generamos el token del usuarios
-        const token = await generarTokenConTiempo(payload, tiempo);
+        const token = generarTokenConTiempo(payload, tokenTime);
 
         // Devolvemos los datos del usuario (trabajador) y el token generado
         res.json({
           status: true,
-          usuario: payload,
+          usuario: payload.usuario,
           token: token,
         });
       }
