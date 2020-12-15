@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"unique":true,"key":{"nombre":{"$numberInt":"1"}},"name":"nombre_1","background":true},{"v":{"$numberInt":"2"},"unique":true,"key":{"tag":{"$numberInt":"1"}},"name":"tag_1","background":true}],"uuid":"18523e7e9231432a956b5b9506c687d4","collectionName":"admin.modulos"}
