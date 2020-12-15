@@ -7,64 +7,30 @@ const uniqueValidator = require("mongoose-unique-validator");
 /*******************************************************************************************************/
 // Creamos el esquema y definimos los nombres y tipos de datos //
 /*******************************************************************************************************/
+// Definimos el tipo para los Id's de Objetos
+const ObjectId = Schema.Types.ObjectId;
+
 const schema = new Schema(
   {
-    nombres: {
-      type: String,
-      required: [true, "El nombre es requerido"],
-    },
-    apellidos: {
-      type: String,
-      required: [true, "Los apellidos son requeridos"],
-    },
-    dni: {
-      type: String,
+    trabajador: {
+      ref: "RrhhTrabajador",
+      type: ObjectId,
       unique: true,
-      required: [true, "El DNI es requerido"],
-      minlength: [8, "El DNI debe tener 8 dígitos"],
-      maxlength: [8, "El DNI debe tener 8 dígitos"],
+      required: [true, "El trabajador es requerido"]
     },
-    email: {
+    password: {
       type: String,
-      unique: true,
-      required: [true, "El correo electrónico es requerido"],
+      required: [true, "La contraseña es obligatoria"],
+      minlength: [6, "La contraseña debe tener mínimo 6 dígitos"]
     },
-    telefono_movil: {
-      type: String,
-      required: [true, "El teléfono móvil es requerido"],
-      minlength: [9, "El DNI debe tener 9 dígitos"],
-      maxlength: [9, "El DNI debe tener 9 dígitos"],
-    },
-    telefono_fijo: String,
-    direccion: String,
-    fecha_nacimiento: {
-      type: Date,
-      required: [true, "La fecha de nacimiento es requerida"],
-    },
-    ubigeo: {
-      departamento: {
-        codigo: String,
-        nombre: String,
-      },
-      provincia: {
-        codigo: String,
-        nombre: String,
-      },
-      distrito: {
-        codigo: String,
-        nombre: String,
-      },
-    },
-    regimen_laboral: String,
-    img: String,
-    estado: {
-        type: Boolean,
-        default: true,
-        required: true
+    rol: {
+      ref: "AdminRoles",
+      type: ObjectId,
+      required: [true, "El rol del usuario es requerido"]
     }
   },
   {
-    collection: "rrhh.trabajadores",
+    collection: "admin.usuarios",
     timestamps: true,
     versionKey: false,
   }
@@ -78,4 +44,4 @@ schema.plugin(uniqueValidator, { message: "{PATH} debe ser único" });
 /*******************************************************************************************************/
 // Exportamos el modelo de datos //
 /*******************************************************************************************************/
-module.exports = model("RrhhTrabajador", schema);
+module.exports = model("AdminUsuario", schema);

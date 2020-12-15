@@ -1,20 +1,21 @@
 /*******************************************************************************************************/
 // Requerimos las dependencias //
 /*******************************************************************************************************/
-const Trabajador = require("../../models/rrhh/trabajador");
+const Usuario = require("../../models/admin/usuario");
+const encrypt = require("../../helpers/encrypt");
 
 /*******************************************************************************************************/
 // Definimos los métodos //
 /*******************************************************************************************************/
 
-// Obtener todos los trabajadores
+// Obtener todos los usuarios
 exports.getAll = (req, res) => {
   // Leemos el query de la petición
   const { query } = req;
   const { campos } = query;
 
-  // Realizamos la búsqueda de todos los trabajadores
-  Trabajador.find({}, campos).exec((err, trabajadores) => {
+  // Realizamos la búsqueda de todos los usuarios
+  Usuario.find({}, campos).exec((err, usuarios) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -22,32 +23,32 @@ exports.getAll = (req, res) => {
       });
     }
 
-    // Devolvemos la lista de trabajadores
+    // Devolvemos la lista de usuarios
     res.json({
       status: true,
-      trabajadores: trabajadores,
-      registros: trabajadores.length,
+      usuarios: usuarios,
+      registros: usuarios.length,
     });
   });
 };
 
-// Crear un nuevo trabajador
-exports.create = (req, res) => {
+// Crear un nuevo usuario
+exports.create = async (req, res) => {
   // Leemos el body de la petición
   const { body } = req;
 
-  // Creamos el modelo del nuevo trabajador
-  const newTrabajador = new Trabajador({
-    nombres: body.nombres,
-    apellidos: body.apellidos,
-    dni: body.dni,
-    email: body.email,
-    telefono_movil: body.telefono_movil,
-    fecha_nacimiento: body.fecha_nacimiento,
+  // Encriptamos la contraseña antes de guardarla
+  const pwdCrypted = await encrypt(body.password);
+
+  // Creamos el modelo del nuevo usuario
+  const newUsuario = new Usuario({
+    trabajador: body.trabajador,
+    password: pwdCrypted,
+    rol: body.rol,
   });
 
-  // Guardamos el nuevo trabajador
-  newTrabajador.save((err, trabajador) => {
+  // Guardamos el nuevo usuario
+  newUsuario.save((err, usuario) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -55,15 +56,15 @@ exports.create = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador guardado
+    // Devolvemos los datos del usuario guardado
     res.json({
       status: true,
-      trabajador: trabajador,
+      usuario: usuario,
     });
   });
 };
 
-// Obtener datos de un trabajador
+// Obtener datos de un usuario
 exports.get = (req, res) => {
   // Leemos los parámetros y el query de la petición
   const { params, query } = req;
@@ -71,7 +72,7 @@ exports.get = (req, res) => {
   const { campos } = query;
 
   // Realizamos la búsqueda por id
-  Trabajador.findById(id, campos).exec((err, trabajador) => {
+  Usuario.findById(id, campos).exec((err, usuario) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -79,23 +80,29 @@ exports.get = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador encontrado
+    // Devolvemos los datos del usuario encontrado
     res.json({
       status: true,
-      trabajador: trabajador,
+      usuario: usuario,
     });
   });
 };
 
-// Actualizar los datos de un trabajador
-exports.update = (req, res) => {
+// Actualizar los datos de un usuario
+exports.update = async (req, res) => {
   // Leemos los parámetros y el body de la petición
   const { params, body } = req;
   const { id } = params;
 
+  if (body.password) {
+    // Encriptamos la contraseña antes de actualizarla
+    const pwdCrypted = await encrypt(body.password);
+    body.password = pwdCrypted;
+  }
+
   // Realizamos la búsqueda por id y actualizamos
-  Trabajador.findByIdAndUpdate(id, { $set: body }, { new: true }).exec(
-    (err, trabajador) => {
+  Usuario.findByIdAndUpdate(id, { $set: body }, { new: true }).exec(
+    (err, usuario) => {
       if (err) {
         return res.status(400).json({
           status: false,
@@ -103,23 +110,23 @@ exports.update = (req, res) => {
         });
       }
 
-      // Devolvemos los datos actualizados del trabajador
+      // Devolvemos los datos actualizados del usuario
       res.json({
         status: true,
-        trabajador: trabajador,
+        usuario: usuario,
       });
     }
   );
 };
 
-// Eliminar un trabajador
+// Eliminar un usuario
 exports.delete = (req, res) => {
   // Leemos los parámetros de la petición
   const { params } = req;
   const { id } = params;
 
   // Realizamos la búsqueda por id y eliminamos
-  Trabajador.findByIdAndDelete(id).exec((err, trabajador) => {
+  Usuario.findByIdAndDelete(id).exec((err, usuario) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -127,10 +134,10 @@ exports.delete = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador eliminado
+    // Devolvemos los datos del usuario eliminado
     res.json({
       status: true,
-      trabajador: trabajador,
+      usuario: usuario,
     });
   });
 };

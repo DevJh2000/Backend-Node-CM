@@ -1,20 +1,20 @@
 /*******************************************************************************************************/
 // Requerimos las dependencias //
 /*******************************************************************************************************/
-const Trabajador = require("../../models/rrhh/trabajador");
+const Accion = require("../../models/admin/accion");
 
 /*******************************************************************************************************/
 // Definimos los métodos //
 /*******************************************************************************************************/
 
-// Obtener todos los trabajadores
+// Obtener todas las acciones
 exports.getAll = (req, res) => {
   // Leemos el query de la petición
   const { query } = req;
   const { campos } = query;
 
-  // Realizamos la búsqueda de todos los trabajadores
-  Trabajador.find({}, campos).exec((err, trabajadores) => {
+  // Realizamos la búsqueda de todas las acciones
+  Accion.find({}, campos).exec((err, acciones) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -22,32 +22,28 @@ exports.getAll = (req, res) => {
       });
     }
 
-    // Devolvemos la lista de trabajadores
+    // Devolvemos la lista de acciones
     res.json({
       status: true,
-      trabajadores: trabajadores,
-      registros: trabajadores.length,
+      acciones: acciones,
+      registros: acciones.length,
     });
   });
 };
 
-// Crear un nuevo trabajador
+// Crear una nueva accion
 exports.create = (req, res) => {
   // Leemos el body de la petición
   const { body } = req;
 
-  // Creamos el modelo del nuevo trabajador
-  const newTrabajador = new Trabajador({
-    nombres: body.nombres,
-    apellidos: body.apellidos,
-    dni: body.dni,
-    email: body.email,
-    telefono_movil: body.telefono_movil,
-    fecha_nacimiento: body.fecha_nacimiento,
+  // Creamos el modelo de la nueva accion
+  const newAccion = new Accion({
+    nombre: body.nombre,
+    descripcion: body.descripcion
   });
 
-  // Guardamos el nuevo trabajador
-  newTrabajador.save((err, trabajador) => {
+  // Guardamos el nuevo accion
+  newAccion.save((err, accion) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -55,15 +51,15 @@ exports.create = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador guardado
+    // Devolvemos los datos de la accion guardada
     res.json({
       status: true,
-      trabajador: trabajador,
+      accion: accion,
     });
   });
 };
 
-// Obtener datos de un trabajador
+// Obtener datos de una accion
 exports.get = (req, res) => {
   // Leemos los parámetros y el query de la petición
   const { params, query } = req;
@@ -71,7 +67,7 @@ exports.get = (req, res) => {
   const { campos } = query;
 
   // Realizamos la búsqueda por id
-  Trabajador.findById(id, campos).exec((err, trabajador) => {
+  Accion.findById(id, campos).exec((err, accion) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -79,23 +75,23 @@ exports.get = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador encontrado
+    // Devolvemos los datos de la accion encontrada
     res.json({
       status: true,
-      trabajador: trabajador,
+      accion: accion,
     });
   });
 };
 
-// Actualizar los datos de un trabajador
+// Actualizar los datos de una accion
 exports.update = (req, res) => {
   // Leemos los parámetros y el body de la petición
   const { params, body } = req;
   const { id } = params;
 
   // Realizamos la búsqueda por id y actualizamos
-  Trabajador.findByIdAndUpdate(id, { $set: body }, { new: true }).exec(
-    (err, trabajador) => {
+  Accion.findByIdAndUpdate(id, { $set: body }, { new: true }).exec(
+    (err, accion) => {
       if (err) {
         return res.status(400).json({
           status: false,
@@ -103,23 +99,23 @@ exports.update = (req, res) => {
         });
       }
 
-      // Devolvemos los datos actualizados del trabajador
+      // Devolvemos los datos actualizados de la accion
       res.json({
         status: true,
-        trabajador: trabajador,
+        accion: accion,
       });
     }
   );
 };
 
-// Eliminar un trabajador
+// Eliminar una accion
 exports.delete = (req, res) => {
   // Leemos los parámetros de la petición
   const { params } = req;
   const { id } = params;
 
   // Realizamos la búsqueda por id y eliminamos
-  Trabajador.findByIdAndDelete(id).exec((err, trabajador) => {
+  Accion.findByIdAndDelete(id).exec((err, accion) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -127,10 +123,10 @@ exports.delete = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador eliminado
+    // Devolvemos los datos de la accion eliminada
     res.json({
       status: true,
-      trabajador: trabajador,
+      accion: accion,
     });
   });
 };

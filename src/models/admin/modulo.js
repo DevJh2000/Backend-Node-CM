@@ -1,24 +1,44 @@
 /*******************************************************************************************************/
 // Requerimos las dependencias //
 /*******************************************************************************************************/
-const { Router } = require("express");
-const trabajador = require("../controllers/rrhh/trabajador.controller");
+const { Schema, model } = require("mongoose");
+const uniqueValidator = require("mongoose-unique-validator");
 
 /*******************************************************************************************************/
-// Instanciamos router //
+// Creamos el esquema y definimos los nombres y tipos de datos //
 /*******************************************************************************************************/
-const router = Router();
+const schema = new Schema(
+  {
+    nombre: {
+      type: String,
+      unique: true,
+      required: [true, "El nombre es necesario"],
+    },
+    tag: {
+      type: String,
+      unique: true,
+      required: [true, "La etiqueta es necesaria"],
+    },
+    descripcion: String,
+    estado: {
+      type: Boolean,
+      default: true,
+      required: true,
+    },
+  },
+  {
+    collection: "admin.modulos",
+    timestamps: true,
+    versionKey: false,
+  }
+);
 
 /*******************************************************************************************************/
-// Definimos las rutas //
+// Validamos los campos que son únicos, con un mensaje personalizado //
 /*******************************************************************************************************/
-router.get("/trabajadores", trabajador.getAll);
-router.post("/trabajador", trabajador.create);
-router.get("/trabajador/:id", trabajador.get);
-router.put("/trabajador/:id", trabajador.update);
-router.delete("/trabajador/:id", trabajador.delete);
+schema.plugin(uniqueValidator, { message: "{PATH} debe ser único" });
 
 /*******************************************************************************************************/
-// Exportamos las rutas definidas en router //
+// Exportamos el modelo de datos //
 /*******************************************************************************************************/
-module.exports = router;
+module.exports = model("AdminModulo", schema);

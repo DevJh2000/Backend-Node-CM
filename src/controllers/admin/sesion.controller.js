@@ -1,20 +1,20 @@
 /*******************************************************************************************************/
 // Requerimos las dependencias //
 /*******************************************************************************************************/
-const Trabajador = require("../../models/rrhh/trabajador");
+const Sesion = require("../../models/admin/sesion");
 
 /*******************************************************************************************************/
 // Definimos los métodos //
 /*******************************************************************************************************/
 
-// Obtener todos los trabajadores
+// Obtener todas las sesiones
 exports.getAll = (req, res) => {
   // Leemos el query de la petición
   const { query } = req;
   const { campos } = query;
 
-  // Realizamos la búsqueda de todos los trabajadores
-  Trabajador.find({}, campos).exec((err, trabajadores) => {
+  // Realizamos la búsqueda de todas las sesiones
+  Sesion.find({}, campos).exec((err, sesiones) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -22,32 +22,29 @@ exports.getAll = (req, res) => {
       });
     }
 
-    // Devolvemos la lista de trabajadores
+    // Devolvemos la lista de sesiones
     res.json({
       status: true,
-      trabajadores: trabajadores,
-      registros: trabajadores.length,
+      sesiones: sesiones,
+      registros: sesiones.length,
     });
   });
 };
 
-// Crear un nuevo trabajador
+// Crear una nueva sesion
 exports.create = (req, res) => {
   // Leemos el body de la petición
   const { body } = req;
 
-  // Creamos el modelo del nuevo trabajador
-  const newTrabajador = new Trabajador({
-    nombres: body.nombres,
-    apellidos: body.apellidos,
-    dni: body.dni,
-    email: body.email,
-    telefono_movil: body.telefono_movil,
-    fecha_nacimiento: body.fecha_nacimiento,
+  // Creamos el modelo de la nueva sesion
+  const newSesion = new Sesion({
+    usuario: body.usuario,
+    dispositivo: body.dispositivo,
+    navegador: body.navegador,
   });
 
-  // Guardamos el nuevo trabajador
-  newTrabajador.save((err, trabajador) => {
+  // Guardamos la nueva sesion
+  newSesion.save((err, sesion) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -55,15 +52,15 @@ exports.create = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador guardado
+    // Devolvemos los datos de la sesion guardada
     res.json({
       status: true,
-      trabajador: trabajador,
+      sesion: sesion,
     });
   });
 };
 
-// Obtener datos de un trabajador
+// Obtener datos de una sesion
 exports.get = (req, res) => {
   // Leemos los parámetros y el query de la petición
   const { params, query } = req;
@@ -71,7 +68,7 @@ exports.get = (req, res) => {
   const { campos } = query;
 
   // Realizamos la búsqueda por id
-  Trabajador.findById(id, campos).exec((err, trabajador) => {
+  Sesion.findById(id, campos).exec((err, sesion) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -79,23 +76,23 @@ exports.get = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador encontrado
+    // Devolvemos los datos de la sesion encontrada
     res.json({
       status: true,
-      trabajador: trabajador,
+      sesion: sesion,
     });
   });
 };
 
-// Actualizar los datos de un trabajador
+// Actualizar los datos de una sesion
 exports.update = (req, res) => {
   // Leemos los parámetros y el body de la petición
   const { params, body } = req;
   const { id } = params;
 
   // Realizamos la búsqueda por id y actualizamos
-  Trabajador.findByIdAndUpdate(id, { $set: body }, { new: true }).exec(
-    (err, trabajador) => {
+  Sesion.findByIdAndUpdate(id, { $set: body }, { new: true }).exec(
+    (err, sesion) => {
       if (err) {
         return res.status(400).json({
           status: false,
@@ -103,23 +100,23 @@ exports.update = (req, res) => {
         });
       }
 
-      // Devolvemos los datos actualizados del trabajador
+      // Devolvemos los datos actualizados de la sesion
       res.json({
         status: true,
-        trabajador: trabajador,
+        sesion: sesion,
       });
     }
   );
 };
 
-// Eliminar un trabajador
+// Eliminar una sesion
 exports.delete = (req, res) => {
   // Leemos los parámetros de la petición
   const { params } = req;
   const { id } = params;
 
   // Realizamos la búsqueda por id y eliminamos
-  Trabajador.findByIdAndDelete(id).exec((err, trabajador) => {
+  Sesion.findByIdAndDelete(id).exec((err, sesion) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -127,10 +124,10 @@ exports.delete = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador eliminado
+    // Devolvemos los datos de la sesion eliminada
     res.json({
       status: true,
-      trabajador: trabajador,
+      sesion: sesion,
     });
   });
 };

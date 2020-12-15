@@ -1,20 +1,20 @@
 /*******************************************************************************************************/
 // Requerimos las dependencias //
 /*******************************************************************************************************/
-const Trabajador = require("../../models/rrhh/trabajador");
+const Rol = require("../../models/admin/rol");
 
 /*******************************************************************************************************/
 // Definimos los métodos //
 /*******************************************************************************************************/
 
-// Obtener todos los trabajadores
+// Obtener todos los roles
 exports.getAll = (req, res) => {
   // Leemos el query de la petición
   const { query } = req;
   const { campos } = query;
 
-  // Realizamos la búsqueda de todos los trabajadores
-  Trabajador.find({}, campos).exec((err, trabajadores) => {
+  // Realizamos la búsqueda de todos los roles
+  Rol.find({}, campos).exec((err, roles) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -22,32 +22,29 @@ exports.getAll = (req, res) => {
       });
     }
 
-    // Devolvemos la lista de trabajadores
+    // Devolvemos la lista de roles
     res.json({
       status: true,
-      trabajadores: trabajadores,
-      registros: trabajadores.length,
+      roles: roles,
+      registros: roles.length,
     });
   });
 };
 
-// Crear un nuevo trabajador
+// Crear un nuevo rol
 exports.create = (req, res) => {
   // Leemos el body de la petición
   const { body } = req;
 
-  // Creamos el modelo del nuevo trabajador
-  const newTrabajador = new Trabajador({
-    nombres: body.nombres,
-    apellidos: body.apellidos,
-    dni: body.dni,
-    email: body.email,
-    telefono_movil: body.telefono_movil,
-    fecha_nacimiento: body.fecha_nacimiento,
+  // Creamos el modelo del nuevo rol
+  const newRol = new Rol({
+    nombre: body.nombre,
+    descripcion: body.descripcion,
+    permisos: body.permisos,
   });
 
-  // Guardamos el nuevo trabajador
-  newTrabajador.save((err, trabajador) => {
+  // Guardamos el nuevo rol
+  newRol.save((err, rol) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -55,15 +52,15 @@ exports.create = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador guardado
+    // Devolvemos los datos del rol guardado
     res.json({
       status: true,
-      trabajador: trabajador,
+      rol: rol,
     });
   });
 };
 
-// Obtener datos de un trabajador
+// Obtener datos de un rol
 exports.get = (req, res) => {
   // Leemos los parámetros y el query de la petición
   const { params, query } = req;
@@ -71,7 +68,7 @@ exports.get = (req, res) => {
   const { campos } = query;
 
   // Realizamos la búsqueda por id
-  Trabajador.findById(id, campos).exec((err, trabajador) => {
+  Rol.findById(id, campos).exec((err, rol) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -79,47 +76,22 @@ exports.get = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador encontrado
+    // Devolvemos los datos del rol encontrado
     res.json({
       status: true,
-      trabajador: trabajador,
+      rol: rol,
     });
   });
 };
 
-// Actualizar los datos de un trabajador
+// Actualizar los datos de un rol
 exports.update = (req, res) => {
   // Leemos los parámetros y el body de la petición
   const { params, body } = req;
   const { id } = params;
 
   // Realizamos la búsqueda por id y actualizamos
-  Trabajador.findByIdAndUpdate(id, { $set: body }, { new: true }).exec(
-    (err, trabajador) => {
-      if (err) {
-        return res.status(400).json({
-          status: false,
-          error: err,
-        });
-      }
-
-      // Devolvemos los datos actualizados del trabajador
-      res.json({
-        status: true,
-        trabajador: trabajador,
-      });
-    }
-  );
-};
-
-// Eliminar un trabajador
-exports.delete = (req, res) => {
-  // Leemos los parámetros de la petición
-  const { params } = req;
-  const { id } = params;
-
-  // Realizamos la búsqueda por id y eliminamos
-  Trabajador.findByIdAndDelete(id).exec((err, trabajador) => {
+  Rol.findByIdAndUpdate(id, { $set: body }, { new: true }).exec((err, rol) => {
     if (err) {
       return res.status(400).json({
         status: false,
@@ -127,10 +99,33 @@ exports.delete = (req, res) => {
       });
     }
 
-    // Devolvemos los datos del trabajador eliminado
+    // Devolvemos los datos actualizados del rol
     res.json({
       status: true,
-      trabajador: trabajador,
+      rol: rol,
+    });
+  });
+};
+
+// Eliminar un rol
+exports.delete = (req, res) => {
+  // Leemos los parámetros de la petición
+  const { params } = req;
+  const { id } = params;
+
+  // Realizamos la búsqueda por id y eliminamos
+  Rol.findByIdAndDelete(id).exec((err, rol) => {
+    if (err) {
+      return res.status(400).json({
+        status: false,
+        error: err,
+      });
+    }
+
+    // Devolvemos los datos del rol eliminado
+    res.json({
+      status: true,
+      rol: rol,
     });
   });
 };
